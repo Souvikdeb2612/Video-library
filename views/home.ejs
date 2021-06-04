@@ -1,0 +1,31 @@
+<%- include("partials/header") %> 
+<%- include("partials/navbar") %>  
+
+  <div class="videos">
+    <section class="video-section">
+        <% for(let b of blogs){ %>
+      <article class="video-container">
+        <a href="/blog/<%= b._id %>" class="thumbnail" data-duration="12:24">
+          <img class="thumbnail-image" src="<%= b.img %>" />
+        </a>
+        <div class="video-bottom-section">
+          <a href="#">
+            <img class="channel-icon" src="img/account.svg" />
+          </a>
+          <div class="video-details">
+            <a href="/blog/<%= b._id %>" class="video-title"><%=b.title%></a>
+            <a href="/blog/<%= b._id %>" class="video-channel-name">Channel Name</a>
+            <div class="video-metadata">
+              <span>12K views</span>
+              •
+              <span>1 week ago</span>
+            </div>
+          </div>
+        </div>
+      </article>
+      <%}%>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,8 +1,11 @@
+  
+
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const path = require('path');
-const seedDB= require('./seed');
+// const seedDB= require('./seed');
+const dotenv = require("dotenv");
 const methodOverride = require('method-override');
 const Blog = require('./models/blog');
 const session = require('express-session');
@@ -12,24 +15,26 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const multer = require('multer');
 
-// Setting up multer for file upload
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, './uploads');
-     },
-    filename: function (req, file, cb) {
-        cb(null , file.originalname);
-    }
-});
 
-const upload = multer({ storage: storage })
+dotenv.config();
+// Setting up multer for file upload
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, './uploads');
+//      },
+//     filename: function (req, file, cb) {
+//         cb(null , file.originalname);
+//     }
+// });
+
+// const upload = multer({ storage: storage })
 
 
 
 const blogRoutes=require('./routes/blog'); 
 const authRoutes = require('./routes/auth');
 
-mongoose.connect('mongodb://localhost:27017/videoDB', {useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify:false})
+mongoose.connect(process.env.DB_URL , {useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify:false})
     .then(() =>{
         console.log("DB connected");
     } )
@@ -84,13 +89,13 @@ app.get('/', async(req,res)=>{
 })
 
 // Add video
-app.post('/single', upload.single('file'), (req, res) => {
-    try {
-      res.send(req.file);
-    }catch(err) {
-      res.send(400);
-    }
-  });
+// app.post('/single', upload.single('blog[img]'), (req, res) => {
+//     try {
+//       res.render('req.file');
+//     }catch(err) {
+//       res.send(400);
+//     }
+//   });
 
 
 

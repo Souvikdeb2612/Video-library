@@ -15,6 +15,15 @@ const blogSchema= new mongoose.Schema({
     text:{
         type:String,
     },
+    name: {
+        type: String,
+      },
+        avatar: {
+        type: String,
+      },
+      cloudinary_id: {
+        type: String,
+      },
     reviews: [
         {
             type: mongoose.Schema.Types.ObjectId,

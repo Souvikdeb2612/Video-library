@@ -2,9 +2,44 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/blog');
 const Review = require('../models/review');
+const Video = require('../models/upload');
 const { isLoggedIn } = require('../middleware');
-const multer = require('multer');
-const upload = multer({dest:'uploads/'});
+const cloudinary = require("../utils/cloudinary");
+const upload = require("../utils/multer");
+
+// Setting up multer for file upload
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, './uploads');
+//      },
+//     filename: function (req, file, cb) {
+//         cb(null , file.originalname);
+//     }
+// });
+
+// const upload = multer({ storage: storage })
+
+
+
+router.post("/single", upload.single("image"), async (req, res) => {
+    try {
+      // Upload image to cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+        // res.json(result)
+      // Create new user
+      let video = new Blog({
+        name: req.body.name,
+        avatar: result.secure_url,
+        cloudinary_id: result.public_id,
+      });
+    //   Save user
+      await video.save();
+    //   res.json(video);
+    res.redirect('/')
+    } catch (err) {
+      console.log(err);
+    }
+  });
 
 // Display all the products
 router.get('/blog', async(req, res) => {
@@ -21,10 +56,14 @@ router.get('/new', (req,res)=>{
 })
 
 // Add new blog
-router.post('/blog', async(req,res)=>{
-    await Blog.create(req.body.blog);
-    res.redirect('/');
-})
+// router.post('/single',  upload.single('blog[img]'), async(req,res)=>{
+//     try{
+//         await Blog.create(req.body.blog);
+//         res.redirect('/');
+//     }catch(err) {
+//     res.send(400);
+//   }
+// })
 
 
 // Show one blog

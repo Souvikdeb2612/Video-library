@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
         unique:true
     },
 
+
 })
 
 userSchema.plugin(passportLocalMongoose);

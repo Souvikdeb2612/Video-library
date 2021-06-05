@@ -13,7 +13,9 @@
             <img class="channel-icon" src="img/account.svg" />
           </a>
           <div class="video-details">
-            <a href="/blog/<%= b._id %>" class="video-title"><%=b.title%></a>
+            <a href="/blog/<%= b._id %>" class="video-title"><% if (b.title.length > 20) { %> 
+              <%=b.title.substr(0,20) + '...'%>
+              <% }else{ %><%= b.title %> <%} %>  </a>
             <a href="/blog/<%= b._id %>" class="video-channel-name">Channel Name</a>
             <div class="video-metadata">
               <span>12K views</span>

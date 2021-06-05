@@ -50,12 +50,12 @@ router.post("/single", upload.single("image"), async (req, res) => {
   });
 
 // Display all the products
-router.get('/blog', async(req, res) => {
+// router.get('/blog', async(req, res) => {
     
-    const blogs=await Blog.find({});
+//     const blogs=await Blog.find({});
 
-    res.render('blogs/index',{blogs});
-})
+//     res.render('blogs/index',{blogs});
+// })
 
 
 // Get add form
@@ -78,6 +78,7 @@ router.get('/new', (req,res)=>{
 router.get('/blog/:id', isLoggedIn ,async(req, res) => {
     try{
         const blog=await Blog.findById(req.params.id).populate('reviews');;
+        console.log(blog)
         res.render('blogs/show', { blog });
     }
     catch(e){
@@ -97,9 +98,30 @@ router.get('/blog/:id/edit', async(req, res) => {
 })
 
 // Upadate the particular blog
-router.patch('/blog/:id', async(req, res) => {
+router.patch('/blog/:id',upload.single("image"), async(req, res) => {
     
-    await Blog.findByIdAndUpdate(req.params.id, req.body.blog);
+    let blog = await Blog.findByIdAndUpdate(req.params.id, req.body.blog);
+    await cloudinary.uploader.destroy(blog.cloudinary_id);
+
+    let result;
+    if (req.file) {
+      result = await cloudinary.uploader.upload(req.file.path, { resource_type: "video", 
+      public_id: "myfolder/mysubfolder/dog_closeup",
+      chunk_size: 6000000,
+      eager: [
+        { width: 300, height: 300, crop: "pad", audio_codec: "none" }, 
+        { width: 160, height: 100, crop: "crop", gravity: "south", audio_codec: "none" } ],                                   
+      eager_async: true,
+      eager_notification_url: "https://mysite.example.com/notify_endpoint" });
+    }
+    console.log(result)
+    const data = {
+      // name: req.body.name || user.name,
+      avatar: result?.secure_url || blog.avatar,
+      cloudinary_id: result?.public_id || blog.cloudinary_id,
+    };
+    // blog = await Blog.findByIdAndUpdate(req.params.id, data, { new: true });
+    // console.log(blog)
 
     res.redirect(`/blog/${req.params.id}`)
 })
